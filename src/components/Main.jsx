@@ -1,21 +1,34 @@
 import { useState } from "react";
 import "../styles/styles.css";
+import AnswersList from "./AnswersList";
 
 function Main() {
   const [open, setOpen] = useState(false); //Ignore this state
 
+  const [answers, setAnswers] = useState([
+    {
+      username: "Mubarak",
+      colour: 3,
+      timeSpent: ["swimming", "chatting"],
+      review: "Everything is great",
+      email: "email@email.com",
+    },
+  ]);
+
   const initialState = {
-    Ratings: "",
-    RubberDuckTime: "",
-    RubberDuckText: "",
-    Name: "",
-    Email: "",
+    colour: "",
+    timeSpent: [],
+    review: "",
+    username: "",
+    email: "",
   };
   const [userData, setUserData] = useState(initialState);
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(userData);
+    setAnswers([...answers, userData]);
+    setUserData(initialState);
+    event.target.reset();
     // console log the user data once the form is submitted
   }
 
@@ -24,19 +37,21 @@ function Main() {
     console.log("name:", name, "type:", type, "value:", value, checked);
     // Helps you see the name and type when it's not shown
     if (name === "color" && type === "radio") {
-      setUserData({ ...userData, Ratings: value });
+      setUserData({ ...userData, colour: value });
     }
     if (name === "spend-time" && type === "checkbox") {
-      setUserData({ ...userData, RubberDuckTime: value });
+      // check if value is in userData.timeSpent and if it is you remove it else you add value
+      // use include function
+      setUserData({ ...userData, timeSpent: [...userData.timeSpent, value] });
     }
-    if (name === "review") {
-      setUserData({ ...userData, RubberDuckText: value });
+    if (name === "review" && type === "textarea") {
+      setUserData({ ...userData, review: value });
     }
     if (name === "username" && type === "text") {
-      setUserData({ ...userData, Name: value });
+      setUserData({ ...userData, username: value });
     }
     if (name === "email" && type === "email") {
-      setUserData({ ...userData, Email: value });
+      setUserData({ ...userData, email: value });
     }
     type === "submit"
       ? console.log(userData)
@@ -47,14 +62,14 @@ function Main() {
     <main className="main">
       <section className={`main__list ${open ? "open" : ""}`}>
         <h2>Answers list</h2>
-        {/* answers should go here */}
+        <AnswersList answersList={answers} />
       </section>
       <section className="main__form">
         {/* a form should be here */}
         {/* ------------------------------------------------------------------------------- */}
-        <form class="form" onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <h2>Tell us what you think about your rubber duck!</h2>
-          <div class="form__group radio">
+          <div className="form__group radio">
             <h3>How do you rate your rubber duck colour?</h3>
             {/* <!-- Radio inputs go here --> */}
             {/* ------------------------------------------------------------------------------- */}
@@ -68,7 +83,7 @@ function Main() {
                   value="1"
                   onChange={handleChange} // 1
                 />
-                <label for="color-one">1</label>
+                <label htmlFor="color-one">1</label>
               </li>
               <li>
                 <input
@@ -78,7 +93,7 @@ function Main() {
                   value="2"
                   onChange={handleChange} // 2
                 />
-                <label for="color-two">2</label>
+                <label htmlFor="color-two">2</label>
               </li>
               <li>
                 <input
@@ -88,7 +103,7 @@ function Main() {
                   value="3"
                   onChange={handleChange} // 3
                 />
-                <label for="color-three">3</label>
+                <label htmlFor="color-three">3</label>
               </li>
               <li>
                 <input
@@ -98,11 +113,11 @@ function Main() {
                   value="4"
                   onChange={handleChange} //4
                 />
-                <label for="color-four">4</label>
+                <label htmlFor="color-four">4</label>
               </li>
             </ul>
           </div>
-          <div class="form__group">
+          <div className="form__group">
             <h3>How do you like to spend time with your rubber duck</h3>
             {/* <!-- checkboxes go here --> */}
             {/* ------------------------------------------------------------------------------- */}
@@ -114,7 +129,7 @@ function Main() {
                     name="spend-time"
                     type="checkbox"
                     value="swimming"
-                    onChange={handleChange === "swimming"} // Checkbox
+                    onChange={handleChange} // Checkbox
                   />
                   Swimming
                 </label>
@@ -125,7 +140,7 @@ function Main() {
                     name="spend-time"
                     type="checkbox"
                     value="bathing"
-                    onChange={handleChange === "bathing"} // Checkbox
+                    onChange={handleChange} // Checkbox
                   />
                   Bathing
                 </label>
@@ -136,7 +151,7 @@ function Main() {
                     name="spend-time"
                     type="checkbox"
                     value="chatting"
-                    onChange={handleChange === "chatting"} // Checkbox
+                    onChange={handleChange} // Checkbox
                   />
                   Chatting
                 </label>
@@ -147,7 +162,7 @@ function Main() {
                     name="spend-time"
                     type="checkbox"
                     value="noTime"
-                    onChange={handleChange === "noTime"} // Checkbox
+                    onChange={handleChange} // Checkbox
                   />
                   I don't like to spend time with it
                 </label>
@@ -182,7 +197,11 @@ function Main() {
               onChange={handleChange} // Email
             />
           </label>
-          <input class="form__submit" type="submit" value="Submit Survey!" />
+          <input
+            className="form__submit"
+            type="submit"
+            value="Submit Survey!"
+          />
         </form>
       </section>
     </main>
